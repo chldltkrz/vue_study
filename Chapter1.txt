@@ -1,0 +1,116 @@
+How to install Vue?
+    CDN, npm, CLI 등
+    CDN: HTML파일 head에 Script 태그를 포함시킨다
+        <script src='https://unpkg.com/vue@next> 라고 하면 항상 최신버전의 vue를 다운받는다
+        *참고* Vue는 semicolon 을 사용하지 않는다
+
+Creating Vew App
+    const app = Vue.createApp()
+        위 줄은 최초의 vue APP을 만든다. Vue를 사용하기전에 정의 되어야 한다.
+         createApp()안의 argument안에는 Data, Function, Template등이 들어갈 수 있는데, 
+         Templete는 그냥 Object 형식으로 `templete: HTM`L코드 형식으로 넣는다
+         Vue app으로 마운트 된 element는 data-v-app 이라고 태그가 생성된다 
+         또한 해당 app 스코프 안의 HTML은 이제 Dynamic한 정보를 표시할 수 있는 Template로 취급받는다 
+
+    app.mount('#app')
+        App이 생성되고 난 후 해당 app을 HTML에 mount 해줘야 하는데 
+        위 줄은 id가 app인 element에 생성된 Vue app을 마운트 해준다 
+        마운트가 된 요소만 vue가 컨트롤하고 그 밖에 요소는 Vue가 컨트롤 할 수 없다 
+
+
+Templates & Data
+    createAPP(
+        data(){
+            return {
+                title: 'Book name'
+            }
+        }
+    )
+        위 코드는 HTML상에서 {{ title }} 형식으로 데이터 출력이 가능하다 
+        이런식으로 여러 다른 데이터를 정의하고 Dynamic하게 출력 가능하다 
+        데이터 타입은 상관 없음 
+
+Methods & Click Events
+    HTML에 v-on directive를 가진 버튼을 생성하고 거기다가 이벤트를 달아서 데이터를 동적으로 변경 가능하다
+    v-on:[이벤트 종류]로 이벤트 종류를 설정 해야한다
+
+    예를들어  HTML Templete 상에서 변수를 변경하고 싶은 경우 
+        <button v-on:click='age++'> INcrease Age </button>
+    라고 있으면 버튼을 클릭할 때 마다 age라는 변수를 1씩 증가 시킨다 
+
+    하지만 v-on:click은 너무 길고 자주 쓰인다고 해서 v-on:파트를 @로 치환 가능하다 -> @click이렇게 씀
+
+    또 js파일 상에서 변수를 변경 하는 Method를 만들 수도 있다
+
+    CreateApp(){
+        data(){},
+        methods: {
+            changeTitle(){
+                this.title = 'title2'
+            }
+        }
+    }
+    <button @click='changeTitle'>click</button>
+        이런식으로 설정하면 버튼을 클릭할때 JS파일에서 정의된 함수를 찾아서 invoke한다
+        *중요* createApp 안의 변수들은 this keyword로 접근해야 변경가능하다, 아니면 레퍼런스 없어서 변경안됨 
+
+    <button @click='changeTitle(Argument)'>click</button>
+        이런식으로 argument를 넣을수도 있다 
+
+Conditional Rendering
+    v-if를 통해 조건에 따라 특정 템플릿을 출력 할 수 있다
+    HTML Templete 상에서 
+    <div v-if='showBooks'> Hi </div>
+    라고 하면 v-if안의 조건에 따라 Hi가 출력 여부를 결정한다
+
+    만약에 v-if안의 변수를 를 토글하고자 하면
+    <button @click='toggleShowBooks'> 
+        <span v-if="showBooks"> Hide botton </span>
+        <span v-else> show botton </span>
+    </buttton>
+
+    위와 같은 HTML 버튼을만들고 
+    method에 toggleShowBOoks(){
+        this.showBooks = !this.showBooks;
+    }
+    라고 하면 클릭할때마다 값이 토글된다 
+    *참고* v-if다음 v-else를 위치해서 일반적인 if-else 문처럼 동작하게 할수 있다
+
+    v-show를 이용해서 같은 동작을하는 위 코드를 더욱 줄일 수 있다
+    v-if는 templete를 통째로 삭제하고, v-show는 CSS를 통해 안보이게 하는 차이점이 있다
+
+other mouse Events!
+    mmouseover, mouseleave, dbclick등 이벤트가 있고 알아서 잘쓰면 됨, 
+    
+    다만 위 이벤트가 트리거 될때 첫번째 argument는 이벤트 오브젝트가 들어오는데,
+    만약 이벤트 뒤에 custom argument를 넣게 되면 이벤트 오브젝트가 넘어오는게 아니고 custom argument가 들어온다 
+    그래서 이벤트 오브젝트를 받기 위해 아래와 같이 명시를 해줘야 한다
+    <div @mouseover='handleEvent($event, 5)'> mouseover </div>
+
+v-for
+    보통 array안의 데이터를 꺼내놓을때 쓴다고 한다 
+
+    v-for='item in [array]'
+
+
+Attribute Binding
+    <a href='http://naver.com'>Naver</a>
+    이건 하드코딩 데이터다
+
+    createApp data에 URL정의후 
+    <a v-bind:href="naver">naver</a>
+    이렇게 해주면 href안의 값이 동적 값이 된다
+
+    혹은 귀찮으니까
+    <a :href="naver">naver</a>
+    이렇게 콜론만 붙여준다
+
+Dynamic Classes
+    Give element certain classes based on conditions
+
+    <li v-for='book in books' :class="{ fav: books.isfav }">ㅇ
+    이 코드 뜻은 만약 books.isfav가 true면 fav 클래스를 추가 해라 라는 뜻 
+
+Computed Properties
+    computed: {} 형식으로 작성한다 
+    보통 Data Properties의 조건을 검색해서 리턴하는데 사용한다고 함

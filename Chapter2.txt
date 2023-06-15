@@ -1,0 +1,114 @@
+Why Use Vue CLI!?
+    By using Vue CLI, 
+        1. Use modern JS features
+        2. Provides us with a live-reload dev server
+        3. Optimize our code for production
+
+To use Vue CLI, 
+    Install nodeJS to use NPM
+    잘 설치 되어있는지 보려면 CMD에 node -v 때리면 버젼 나옴
+    일단 CLI를 설치하기 위해 다음과 같은 명령어를 때린다 
+        npm install -g @vue/cli
+    다음 Vue Project생성을 위해  다음 명령어를 친다
+        vue create [생성될 프로젝트 이름]
+
+Project Walkthrough
+    node_modules
+        Library나 프로젝트 dependency가 들어가는 폴더  수정할 필요 없음
+    Public
+        index.html을 포함하고 있음, SPA를 위해 하나만 존재함
+    src
+        모든 소스코드, CSS등 여러 파일이 들어감
+        안에 main.js가 있는데 vue를 실행하는 파일임 
+        vue파일은 뭐든지 templete, script, style로 만들어져 있다고 함
+
+    pakkage.json
+        파일 안에 다음과 같은 정의가 있는데, 해당 명령어를 통해 VUE 서버를 실행하고 빌드할 수 있다
+        "serve": "vue-cli-service serve",   
+
+Vue Files & templete
+
+    Every Vue file represents singfle VUE Compoment! NOt two
+    HTML Templete, Script, Style 파트로 나눠질수 있음(HTML은 필수로 들어가야함)
+    예전에는 Root Element안에 element를 집어 넣어야 했는데 지금은 여러 Root element를 가질수 있다
+
+    추후 프로젝트 파일 디펜던시를 다운로드 하기 위해 npm install로 Package.json안에 있는 디펜던시를 깔아준다
+
+Templete Refs
+    QuerySelector 대신에 Templete Refs를 사용한다고 한다
+
+    ExampleL>
+        templete에 ref태그를 걸고 script에 this.$refs.[ref태그 이름]으로 접근할수있다
+        이걸로 클래스를 더하거나 빼거나 등등 작업을 할 수 있다.
+
+Multiple Compoment
+    당연히 모든 Compoment가 한곳에 있으면 관리가 복잡해진다
+
+    App.vue파일이 root Compoment로 이하에 여러 컴포넌트를 만들어서 관리한다
+
+Component Style & Global Styles
+
+    App.vue style에 스타일을 적용하면 하위 컴포넌트까지 영향을 받는다(적용된다)
+    반대도 성립한다
+
+    방법1. style scoped를 사용해서 각 파알미다 스코프를 정의한다
+        태그를 인젝트해서 사용하기때문에 로딩시간에 영향을 미칠수 있다
+
+Passing Data with Props
+
+    사용 이유
+        1. 컴포넌트 재사용율을 늘리기 위해서 
+            변수로 메세지나 내용을 전달하면 하드코딩이랑은 다르게 다른 컨텍스트에서도 사용 가능하다
+        2. 데이터가 여러곳에서 쓰여도 한곳에서만 define하면 된다(Single Source of Truth)
+        3. 커스텀 가능하게 한다
+
+
+    Component에서 그냥 맘에드는 태그 걸어주고 Props로 사용하면 됨
+    Ex> <Modal header='data'/>
+        Modal.vue에서 
+            <script>
+                export default{
+                    props: ['header'],
+                }
+            </script>
+        로 박아주고 
+        templete에서 변수처럼 사용하면 된다 
+
+Emitting Custom Events
+
+    this.$emit('[event이름 아무거나]')
+        만약 close로 하면 close 이벤트를 발생시킨다
+
+Click Event Modifier
+
+    Click event on Certain condition!
+    @click.[modifier] 형식으로 사용한다
+    EX> @click.right 는 마우스 오른쪽버튼 누를때만 Fire된다
+        @click.self 는 자신을 클릭할때만 fire된다
+
+Slots
+
+    Compoment에 Custom Templete를 넣을때 유용하다고 한다
+    Slot을 사용해서 데이터를 넘기지 않고 Props를 사용해서 Templete를 넘기지 않는다
+
+    사용하기 위해 Self-closing태그로 만들지 않는다 
+    EX> App.vue 파일에서
+            <Modal /> 을 <Modal></Modal>로 변경하고 안에 Templete를 넣는다
+            <Modal>
+                <h1> hi </h1>
+                <p> hello </p>
+            </Modal>
+        Modal.vue 파일 Templete에서 
+            <slot></slot>를 추가해서 사용한다
+
+        Slot내용에 들어간 templete는 <slot></slot> 안에 표시된다
+         
+        named slot도 만들수 있는데 
+        임의의 templete에 v-slot:[이름] 형식으로 만들고
+        <slot name='[이름]'></slot>를 통해 사용한다
+
+        <slot>[내용]</slot> 내용을 넣지 않으면 [내용]이 출력된다
+         
+Teleport
+    <teleport to="[class이름]"></teleport>
+    위 태그로 기존 #app에서 랜더링 되는 Templete를 다른 Class나 ID로 옮길 수 있다
